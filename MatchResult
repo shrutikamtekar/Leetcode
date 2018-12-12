@@ -1,0 +1,57 @@
+Given a list of outcomes of matches between pairs of teams, with each outcome being a win or a loss. Given two teams A and B, is there a sequence of teams starting with A and ending with B such that each team in the sequence has beaten the next team in the sequence.
+
+``
+class MatchResult
+{
+  private String winningTeam;
+  private String losingTeam;
+  
+  public MatchResult (String winningTeam, String losingTeam)
+  {
+    this.winningTeam = winningTeam;
+    this.losingTeam = losingTeam;
+  }
+ 
+ public static boolean canTeamABeatTeamB(List<MatchResult> results, String teamA, String teamB)
+ {
+    Set<String> visited = new HashSet<>();
+    Map<String, Set<String>> graph = buildGraph(results);
+    return dfs(graph, visited, teamA, teamB);
+ }
+ 
+ private Map<String, Set<String>> buildGraph (List<MatchResult> results)
+ {
+    Map<String, Set<String>> graph = new HashMap<>();
+    for(MatchResult match : result)
+    {
+        Set<String> edges = graph.get(match.winningTeam);
+        if(edges == null)
+        {
+          edges = new HashSet<>();
+          graph.put(match.winningTeam, edges);
+        }
+        edges.add(match.losingTeam);
+    }
+    return graph;
+ }
+         
+  private boolean dfs(Map<String, Set<String>> graph, String curr, String dest, Set<String> visited)
+  {
+    if(curr.equals(dest))
+      return true;
+     
+     else if(visited.contains(curr) || graph.get(curr) == null)
+      return false;
+     
+     visited.add(curr);
+     
+     for(String team : graph.get(curr))
+     {
+        if(dfs(graph,team, dest, visited))
+        {
+          return true;
+        }
+  }
+      
+      return false;
+   }
